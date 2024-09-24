@@ -94,25 +94,69 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
 
-  uint8_t state = 0;
+  void set_light_state(int state) {
+    switch (state) {
+        case 0:
+            // Set GPIO pins for RED light
+            HAL_GPIO_WritePin(GPIOA, LED_RED_Pin, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOA, LED_YELLOW_Pin, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, LED_GREEN_Pin, GPIO_PIN_SET);
+            break;
+        case 1:
+            // Set GPIO pins for YELLOW light
+            HAL_GPIO_WritePin(GPIOA, LED_RED_Pin, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, LED_YELLOW_Pin, GPIO_PIN_RESET);
+            HAL_GPIO_WritePin(GPIOA, LED_GREEN_Pin, GPIO_PIN_SET);
+            break;
+        case 2:
+            // Set GPIO pins for GREEN light
+            HAL_GPIO_WritePin(GPIOA, LED_RED_Pin, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, LED_YELLOW_Pin, GPIO_PIN_SET);
+            HAL_GPIO_WritePin(GPIOA, LED_GREEN_Pin, GPIO_PIN_RESET);
+            break;
+    }
+ }
+
+ typedef enum {
+    STATE_RED,
+    STATE_YELLOW,
+    STATE_GREEN,
+} TrafficLightState;
+TrafficLightState state = STATE_RED;
+int count=1;
   while (1)
   {
-      // Check the current state
-      if (state == 0) {
-          // State 0: RED LED ON (active low), YELLOW LED OFF (active high)
-          HAL_GPIO_WritePin(GPIOA, LED_RED_Pin, GPIO_PIN_RESET);  // RED LED ON
-          HAL_GPIO_WritePin(GPIOA, LED_YELLOW_Pin, GPIO_PIN_SET); // YELLOW LED OFF
-      } else {
-          // State 1: RED LED OFF (active high), YELLOW LED ON (active low)
-          HAL_GPIO_WritePin(GPIOA, LED_RED_Pin, GPIO_PIN_SET);    // RED LED OFF
-          HAL_GPIO_WritePin(GPIOA, LED_YELLOW_Pin, GPIO_PIN_RESET); // YELLOW LED ON
-      }
+    switch (state) {
+        case STATE_RED:
+            // RED light
+            set_light_state(0);
+            if (count == 5) {
+                state = STATE_YELLOW;
+                count = 0;
+            }
+            break;
 
-      // Wait for 1 second
-      HAL_Delay(2000);
+        case STATE_YELLOW:
+            // YELLOW light
+            set_light_state(1);
+            if (count == 2) {
+                state = STATE_GREEN;
+                count = 0;
+            }
+            break;
 
-      // Toggle the state every second
-      state = !state;
+        case STATE_GREEN:
+            // GREEN light
+            set_light_state(2);
+            if (count == 3) {
+                state = STATE_RED;
+                count = 0;
+            } // Transition to YELLOW after GREEN
+            break;
+
+    }
+        count++;
+    HAL_Delay(1000);
 
 
 
