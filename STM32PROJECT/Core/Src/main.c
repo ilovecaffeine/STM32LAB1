@@ -94,69 +94,170 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
 
-  void set_light_state(int state) {
-    switch (state) {
-        case 0:
-            // Set GPIO pins for RED light
-            HAL_GPIO_WritePin(GPIOA, LED_RED_Pin, GPIO_PIN_RESET);
-            HAL_GPIO_WritePin(GPIOA, LED_YELLOW_Pin, GPIO_PIN_SET);
-            HAL_GPIO_WritePin(GPIOA, LED_GREEN_Pin, GPIO_PIN_SET);
-            break;
-        case 1:
-            // Set GPIO pins for YELLOW light
-            HAL_GPIO_WritePin(GPIOA, LED_RED_Pin, GPIO_PIN_SET);
-            HAL_GPIO_WritePin(GPIOA, LED_YELLOW_Pin, GPIO_PIN_RESET);
-            HAL_GPIO_WritePin(GPIOA, LED_GREEN_Pin, GPIO_PIN_SET);
-            break;
-        case 2:
-            // Set GPIO pins for GREEN light
-            HAL_GPIO_WritePin(GPIOA, LED_RED_Pin, GPIO_PIN_SET);
-            HAL_GPIO_WritePin(GPIOA, LED_YELLOW_Pin, GPIO_PIN_SET);
-            HAL_GPIO_WritePin(GPIOA, LED_GREEN_Pin, GPIO_PIN_RESET);
-            break;
-    }
- }
+  void set_light_state(int way, int state) {
+      switch (way) {
+          case 0:
+              switch (state) {
+                  case 0:
+                      // Set GPIO pins for RED light
+                      HAL_GPIO_WritePin(GPIOB, LED_1_Pin, GPIO_PIN_SET);
+                      HAL_GPIO_WritePin(GPIOB, LED_12_Pin, GPIO_PIN_RESET);
+                      HAL_GPIO_WritePin(GPIOB, LED_11_Pin, GPIO_PIN_RESET);
+                      break;
+                  case 1:
+                      // Set GPIO pins for YELLOW light
+                      HAL_GPIO_WritePin(GPIOB, LED_1_Pin, GPIO_PIN_RESET);
+                      HAL_GPIO_WritePin(GPIOB, LED_12_Pin, GPIO_PIN_SET);
+                      HAL_GPIO_WritePin(GPIOB, LED_11_Pin, GPIO_PIN_RESET);
+                      break;
+                  case 2:
+                      // Set GPIO pins for GREEN light
+                      HAL_GPIO_WritePin(GPIOB, LED_1_Pin, GPIO_PIN_RESET);
+                      HAL_GPIO_WritePin(GPIOB, LED_12_Pin, GPIO_PIN_RESET);
+                      HAL_GPIO_WritePin(GPIOB, LED_11_Pin, GPIO_PIN_SET);
+                      break;
+              }
+              break;
+          case 1:
+              switch (state) {
+                  case 0:
+                      // Set GPIO pins for RED light
+                      HAL_GPIO_WritePin(GPIOB, LED_4_Pin, GPIO_PIN_SET);
+                      HAL_GPIO_WritePin(GPIOB, LED_3_Pin, GPIO_PIN_RESET);
+                      HAL_GPIO_WritePin(GPIOB, LED_2_Pin, GPIO_PIN_RESET);
+                      break;
+                  case 1:
+                      // Set GPIO pins for YELLOW light
+                      HAL_GPIO_WritePin(GPIOB, LED_4_Pin, GPIO_PIN_RESET);
+                      HAL_GPIO_WritePin(GPIOB, LED_3_Pin, GPIO_PIN_SET);
+                      HAL_GPIO_WritePin(GPIOB, LED_2_Pin, GPIO_PIN_RESET);
+                      break;
+                  case 2:
+                      // Set GPIO pins for GREEN light
+                      HAL_GPIO_WritePin(GPIOB, LED_4_Pin, GPIO_PIN_RESET);
+                      HAL_GPIO_WritePin(GPIOB, LED_3_Pin, GPIO_PIN_RESET);
+                      HAL_GPIO_WritePin(GPIOB, LED_2_Pin, GPIO_PIN_SET);
+                      break;
+              }
+              break;
 
- typedef enum {
-    STATE_RED,
-    STATE_YELLOW,
-    STATE_GREEN,
+      }
+    }
+
+typedef enum {
+    STATE_WAY1_GREEN,
+    STATE_WAY1_YELLOW,
+    STATE_WAY1_RED,
+    STATE_WAY2_GREEN,
+    STATE_WAY2_YELLOW,
+    STATE_WAY2_RED
+
 } TrafficLightState;
-TrafficLightState state = STATE_RED;
+
+TrafficLightState state = STATE_WAY1_GREEN;
+TrafficLightState state2 = STATE_WAY2_RED;
 int count=1;
+int count2=1;
   while (1)
   {
-    switch (state) {
-        case STATE_RED:
-            // RED light
-            set_light_state(0);
-            if (count == 5) {
-                state = STATE_YELLOW;
-                count = 0;
-            }
-            break;
 
-        case STATE_YELLOW:
-            // YELLOW light
-            set_light_state(1);
-            if (count == 2) {
-                state = STATE_GREEN;
-                count = 0;
-            }
-            break;
 
-        case STATE_GREEN:
-            // GREEN light
-            set_light_state(2);
+
+      switch (state) {
+        case STATE_WAY1_GREEN:
+            // Way 1: GREEN
+            set_light_state(0, 2); // Way 1 GREEN
+
+
+
+
+
+
             if (count == 3) {
-                state = STATE_RED;
+                state = STATE_WAY1_YELLOW;
                 count = 0;
-            } // Transition to YELLOW after GREEN
+            }
             break;
+
+        case STATE_WAY1_YELLOW:
+            // Way 1: YELLOW
+            set_light_state(0, 1); // Way 1 YELLOW
+
+
+
+
+
+
+            if (count == 2) {
+                state = STATE_WAY1_RED;
+                count = 0;
+            }
+            break;
+        case STATE_WAY1_RED:
+            // Way 1: RED
+            set_light_state(0, 0); // Way 1 RED
+
+
+
+
+
+
+            if (count == 5) {
+                state = STATE_WAY1_GREEN;
+                count = 0;
+            }
+            break;
+
 
     }
-        count++;
-    HAL_Delay(1000);
+
+      switch (state2) {
+          case STATE_WAY2_RED:
+              // Way 2: RED
+              set_light_state(1, 0); // Way 2 RED
+
+
+
+
+
+              if (count2 == 5) {
+                  state2 = STATE_WAY2_GREEN;
+                  count2 = 0;
+              }
+              break;
+
+          case STATE_WAY2_GREEN:
+              // Way 2: GREEN
+              set_light_state(1, 2); // Way 2 GREEN
+
+
+
+
+
+              if (count2 == 3) {
+                  state2 = STATE_WAY2_YELLOW;
+                  count2 = 0;
+              }
+              break;
+
+          case STATE_WAY2_YELLOW:
+              // Way 2: YELLOW
+              set_light_state(1, 1); // Way 2 YELLOW
+
+
+
+
+
+              if (count2 == 2) {
+                  state2 = STATE_WAY2_RED;
+                  count2 = 0;
+              }
+              break;
+      }
+
+      count++;
+      count2++;
+      HAL_Delay(1000);
 
 
 
