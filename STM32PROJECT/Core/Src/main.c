@@ -93,63 +93,79 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  // Define the array globally
-  uint16_t led_pins[] = {LED_12_Pin, LED_1_Pin, LED_2_Pin, LED_3_Pin, LED_4_Pin, LED_5_Pin, LED_6_Pin, LED_7_Pin, LED_8_Pin, LED_9_Pin, LED_10_Pin, LED_11_Pin};
-
-  void clearAllClock() {
-    for (int i = 0; i < 12; i++) {
-      HAL_GPIO_WritePin(GPIOB, led_pins[i], GPIO_PIN_RESET);
-    }
+uint16_t led_pins[] = {LED_1_Pin, LED_2_Pin, LED_3_Pin, LED_4_Pin, LED_5_Pin, LED_6_Pin, LED_7_Pin, LED_8_Pin, LED_9_Pin, LED_10_Pin, LED_11_Pin, LED_12_Pin};
+void clearAllClock() {
+  for (int i = 0; i < 12; i++) {
+    HAL_GPIO_WritePin(GPIOB, led_pins[i], GPIO_PIN_RESET);
   }
-
-  void setNumberOnClock(int num) {
-      // Ensure the number is within the valid range
-      if (num < 0 || num > 11) {
-          return; // Invalid number, do nothing
-      }
-      // Turn on the light based on the number
-      HAL_GPIO_WritePin(GPIOB, led_pins[num], GPIO_PIN_SET);
-  }
-
-  void clearNumberOnClock(int num) {
-      // Ensure the number is within the valid range
-      if (num < 0 || num > 11) {
-          return; // Invalid number, do nothing
-      }
-      // Turn off the light based on the number
-      HAL_GPIO_WritePin(GPIOB, led_pins[num], GPIO_PIN_RESET);
-  }
-
-
-  // Define variables for sec, min, hour
-  int sec = 0;
-  int min = 15;
-  int hour = 6;
-
-  while (1) {
-    // Update the time variables
-    sec++;
-    if (sec >= 60) {
-      sec = 0;
-      min++;
-    }
-    if (min >= 60) {
-      min = 0;
-      hour++;
-    }
-    if (hour >= 12) {
-      hour = 0;
+}
+void setNumberOnClock(int num) {
+    // Ensure the number is within the valid range
+    if (num < 0 || num > 11) {
+        return; // Invalid number, do nothing
     }
 
-    // Display the time on the clock
-    clearAllClock();
-    setNumberOnClock(sec/5);
-    setNumberOnClock(min/5);
-    setNumberOnClock(hour);
+    // Turn on the light based on the number
+    switch (num) {
+        case 0:
+            HAL_GPIO_WritePin(GPIOB, LED_1_Pin, GPIO_PIN_SET);
+            break;
+        case 1:
+            HAL_GPIO_WritePin(GPIOB, LED_2_Pin, GPIO_PIN_SET);
+            break;
+        case 2:
+            HAL_GPIO_WritePin(GPIOB, LED_3_Pin, GPIO_PIN_SET);
+            break;
+        case 3:
+            HAL_GPIO_WritePin(GPIOB, LED_4_Pin, GPIO_PIN_SET);
+            break;
+        case 4:
+            HAL_GPIO_WritePin(GPIOB, LED_5_Pin, GPIO_PIN_SET);
+            break;
+        case 5:
+            HAL_GPIO_WritePin(GPIOB, LED_6_Pin, GPIO_PIN_SET);
+            break;
+        case 6:
+            HAL_GPIO_WritePin(GPIOB, LED_7_Pin, GPIO_PIN_SET);
+            break;
+        case 7:
+            HAL_GPIO_WritePin(GPIOB, LED_8_Pin, GPIO_PIN_SET);
+            break;
+        case 8:
+            HAL_GPIO_WritePin(GPIOB, LED_9_Pin, GPIO_PIN_SET);
+            break;
+        case 9:
+            HAL_GPIO_WritePin(GPIOB, LED_10_Pin, GPIO_PIN_SET);
+            break;
+        case 10:
+            HAL_GPIO_WritePin(GPIOB, LED_11_Pin, GPIO_PIN_SET);
+            break;
+        case 11:
+            HAL_GPIO_WritePin(GPIOB, LED_12_Pin, GPIO_PIN_SET);
+            break;
+        default:
+            // Handle invalid input
+            break;
+    }
+}
+
+int counter = 0;
+  while (1)
+  {
+
+    if (counter >= 12) counter = 0;
+    void clearAllClock(); //Clears all clocks
+    setNumberOnClock(counter++);
     HAL_Delay(1000);
 
 
-	  /* USER CODE END WHILE */
+
+
+
+
+
+
+    /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
@@ -205,13 +221,21 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LED_1_Pin|LED_2_Pin|LED_10_Pin|LED_11_Pin
                           |LED_12_Pin|LED_3_Pin|LED_4_Pin|LED_5_Pin
                           |LED_6_Pin|LED_7_Pin|LED_8_Pin|LED_9_Pin, GPIO_PIN_RESET);
+
+
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED_1_Pin LED_2_Pin LED_10_Pin LED_11_Pin
                            LED_12_Pin LED_3_Pin LED_4_Pin LED_5_Pin
