@@ -93,61 +93,33 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-uint16_t led_pins[] = {LED_1_Pin, LED_2_Pin, LED_3_Pin, LED_4_Pin, LED_5_Pin, LED_6_Pin, LED_7_Pin, LED_8_Pin, LED_9_Pin, LED_10_Pin, LED_11_Pin, LED_12_Pin};
-void clearAllClock() {
-  for (int i = 0; i < 12; i++) {
-    HAL_GPIO_WritePin(GPIOB, led_pins[i], GPIO_PIN_RESET);
-  }
-}
-void setNumberOnClock(int num) {
-    // Ensure the number is within the valid range
-    if (num < 0 || num > 11) {
-        return; // Invalid number, do nothing
-    }
+  uint16_t led_pins[] = {LED_12_Pin, LED_1_Pin, LED_2_Pin, LED_3_Pin, LED_4_Pin, LED_5_Pin, LED_6_Pin, LED_7_Pin, LED_8_Pin, LED_9_Pin, LED_10_Pin, LED_11_Pin};
 
-    // Turn on the light based on the number
-    switch (num) {
-        case 0:
-            HAL_GPIO_WritePin(GPIOB, LED_1_Pin, GPIO_PIN_SET);
-            break;
-        case 1:
-            HAL_GPIO_WritePin(GPIOB, LED_2_Pin, GPIO_PIN_SET);
-            break;
-        case 2:
-            HAL_GPIO_WritePin(GPIOB, LED_3_Pin, GPIO_PIN_SET);
-            break;
-        case 3:
-            HAL_GPIO_WritePin(GPIOB, LED_4_Pin, GPIO_PIN_SET);
-            break;
-        case 4:
-            HAL_GPIO_WritePin(GPIOB, LED_5_Pin, GPIO_PIN_SET);
-            break;
-        case 5:
-            HAL_GPIO_WritePin(GPIOB, LED_6_Pin, GPIO_PIN_SET);
-            break;
-        case 6:
-            HAL_GPIO_WritePin(GPIOB, LED_7_Pin, GPIO_PIN_SET);
-            break;
-        case 7:
-            HAL_GPIO_WritePin(GPIOB, LED_8_Pin, GPIO_PIN_SET);
-            break;
-        case 8:
-            HAL_GPIO_WritePin(GPIOB, LED_9_Pin, GPIO_PIN_SET);
-            break;
-        case 9:
-            HAL_GPIO_WritePin(GPIOB, LED_10_Pin, GPIO_PIN_SET);
-            break;
-        case 10:
-            HAL_GPIO_WritePin(GPIOB, LED_11_Pin, GPIO_PIN_SET);
-            break;
-        case 11:
-            HAL_GPIO_WritePin(GPIOB, LED_12_Pin, GPIO_PIN_SET);
-            break;
-        default:
-            // Handle invalid input
-            break;
+  void clearAllClock() {
+    for (int i = 0; i < 12; i++) {
+      HAL_GPIO_WritePin(GPIOB, led_pins[i], GPIO_PIN_RESET);
     }
-}
+  }
+
+  void setNumberOnClock(int num) {
+      // Ensure the number is within the valid range
+      if (num < 0 || num > 11) {
+          return; // Invalid number, do nothing
+      }
+      // Turn on the light based on the number
+      HAL_GPIO_WritePin(GPIOB, led_pins[num], GPIO_PIN_SET);
+  }
+
+  void clearNumberOnClock(int num) {
+      // Ensure the number is within the valid range
+      if (num < 0 || num > 11) {
+          return; // Invalid number, do nothing
+      }
+      // Turn off the light based on the number
+      HAL_GPIO_WritePin(GPIOB, led_pins[num], GPIO_PIN_RESET);
+  }
+
+
 
 int counter = 0;
   while (1)
